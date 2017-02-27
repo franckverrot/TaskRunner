@@ -1,7 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
-import System.IO
-import Control.Exception
+import System.Directory
 
 data Retry = AtMost Int
            | Forever
@@ -68,8 +65,10 @@ task `onRun` action =
 
 checkFileExists :: String -> IO (Maybe LastRun)
 checkFileExists filename = do
-  handle (\(e :: IOException) -> print e >> return Nothing) $ do
-    openFile filename ReadMode >> return (Just Success)
+  result <- doesFileExist filename
+  case result of
+    False -> return Nothing
+    True  -> return (Just Success)
 
 config = newTask
            `taskName` "Root level"
