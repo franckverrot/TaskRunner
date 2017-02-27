@@ -27,7 +27,7 @@ main = do
 ```
 
 ```
-λ stack exec runhaskell TaskRunner.hs
+λ make
 Config:
 Task<name=Root level, retry=AtMost 1, targets=1>
   Task<name=subtask1, retry=Forever, targets=1>
