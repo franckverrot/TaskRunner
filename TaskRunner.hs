@@ -66,16 +66,16 @@ task `onRun` action =
   task { action = action }
 
 
+checkFileExists :: String -> IO (Maybe LastRun)
+checkFileExists filename = do
+  handle (\(e :: IOException) -> print e >> return Nothing) $ do
+    openFile filename ReadMode >> return (Just Success)
+
 config = newTask
            `taskName` "Root level"
            `retryCount` (AtMost 1)
            `addTopLevelTask` subtask1
            `onRun` putStrLn "Running..."
-
-checkFileExists :: String -> IO (Maybe LastRun)
-checkFileExists filename = do
-  handle (\(e :: IOException) -> print e >> return Nothing) $ do
-    openFile filename ReadMode >> return (Just Success)
 
 subtask1 = newTask
              `taskName` "subtask1"
