@@ -66,9 +66,14 @@ task `onRun` action =
 checkFileExists :: String -> IO (Maybe LastRun)
 checkFileExists filename = do
   result <- doesFileExist filename
+  putStr $ "  Checking for file " ++ filename ++ "... "
   case result of
-    False -> return Nothing
-    True  -> return (Just Success)
+    False -> do
+               putStrLn "Not found. Let's run the task?"
+               return Nothing
+    True  -> do
+               putStrLn "Found. No need to rerun the task."
+               return $ Just Success
 
 config = newTask
            `taskName` "Root level"
@@ -78,12 +83,13 @@ config = newTask
 
 subtask1 = newTask
              `taskName` "subtask1"
-             `reportLastRun` (checkFileExists "TaskRunner.hs")
+             `reportLastRun` (checkFileExists "subtask1.output")
              `addTopLevelTask` subtask2
              `onRun` putStrLn " hello1"
 
 subtask2 = newTask
              `taskName` "subtask2"
+             `reportLastRun` (checkFileExists "subtask2.output")
              `onRun` putStrLn "  hello2"
 
 run :: Task -> IO ()
